@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handson 5</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <center> <h1>Inheritance and Prototype</h1></center>
+    <p>Q.1 Create 2 objects - parent and child. Attach methods to parent and use those methods in child object using parents prototype</p>
+    <pre>→ // Parent object constructor
+        function Parent() {}
+        
+        // Method attached to parent's prototype
+        Parent.prototype.sayHello = function() {
+          console.log("Hello from the parent!");
+        };
+        
+        // Child object constructor
+        function Child() {}
+        
+        // Inheriting from the parent's prototype
+        Child.prototype = Object.create(Parent.prototype);
+        
+        // Method in the child object using the parent's prototype method
+        Child.prototype.sayGreetings = function() {
+          console.log("Greetings from the child!");
+          // Call parent's method using prototype chain
+          this.sayHello();
+        };
+        
+        // Creating instances of parent and child objects
+        var parent = new Parent();
+        var child = new Child();
+        
+        // Using the methods
+        parent.sayHello();      // Output: Hello from the parent!
+        child.sayGreetings();
+    
+    Explenation: In this example, we have a Parent object and a Child object. The Parent object has a method called sayHello attached to its prototype. The Child object inherits from the Parent object's prototype using Object.create(Parent.prototype).
+
+    The Child object also has its own method called sayGreetings, which calls the sayHello method of the parent using the prototype chain (this.sayHello()).
+    
+    By creating instances of the parent and child objects (var parent = new Parent() and var child = new Child()), we can then use the methods defined in each object. The parent.sayHello() call outputs "Hello from the parent!", and the child.sayGreetings() call outputs "Greetings from the child!" followed by "Hello from the parent!" as it utilizes the parent's method using the prototype chain.</pre>
+    <p>Q.2 Write code to explain prototype chaining</p>
+    <pre>→ // Parent object constructor
+        function Parent(name) {
+          this.name = name;
+        }
+        
+        // Method attached to parent's prototype
+        Parent.prototype.greet = function() {
+          console.log(`Hello, my name is ${this.name}`);
+        };
+        
+        // Child object constructor
+        function Child(name, age) {
+          Parent.call(this, name);
+          this.age = age;
+        }
+        
+        // Inheriting from the parent's prototype
+        Child.prototype = Object.create(Parent.prototype);
+        Child.prototype.constructor = Child;
+        
+        // Method in the child object using the parent's prototype method
+        Child.prototype.introduce = function() {
+          console.log(`My name is ${this.name} and I am ${this.age} years old`);
+        };
+        
+        // Creating instances of parent and child objects
+        var parent = new Parent("John");
+        var child = new Child("Jane", 10);
+        
+        // Using the methods
+        parent.greet();         
+        child.greet();          
+        child.introduce();  
+        Explain:    
+        In this example, we have a Parent object and a Child object. The Parent object has a name property and a greet method attached to its prototype. The Child object extends the Parent object using Object.create(Parent.prototype) to inherit properties and methods.
+        
+        To ensure the Child object properly inherits the name property, we call Parent.call(this, name) inside the Child constructor to execute the Parent constructor with the Child object as the context.
+        
+        The Child object also has its own age property and an introduce method, which is unique to the Child object.
+        
+        When creating instances of the parent and child objects (var parent = new Parent("John") and var child = new Child("Jane", 10)), we can access and use the inherited methods. Both parent and child can call the greet method from the parent object. The child object can also call its own introduce method.
+        
+        This way, through prototype chaining, the child object inherits properties and methods from the parent object while also having its own unique properties and methods.
+        </pre>
+<p> Q.3 Add a method to calculate sum of all elements in Array in array's protype, use that method to calculate sum for multiple arrays</p>
+<pre>→ // Adding method to calculate sum to Array prototype
+    Array.prototype.sum = function() {
+      return this.reduce((total, current) => total + current, 0);
+    };
+    
+    // Example arrays
+    var array1 = [1, 2, 3, 4, 5];
+    var array2 = [10, 20, 30];
+    var array3 = [2, 4, 6, 8, 10, 12];
+    
+    // Calculating sum using the sum method from Array prototype
+    var sum1 = array1.sum();
+    var sum2 = array2.sum();
+    var sum3 = array3.sum();
+    
+    console.log(sum1);   
+    console.log(sum2);   
+    console.log(sum3);   
+Explain: we define a sum method and add it to the Array prototype using Array.prototype.sum = function() {...}. The sum method uses the reduce function to iterate over the array and calculate the sum of its elements.
+We then create three example arrays: array1, array2, and array3. Using the newly added sum method, we calculate the sum of each array by calling array1.sum(), array2.sum(), and array3.sum().
+Finally, we print the calculated sums using console.log().
+By adding the sum method to the Array prototype, it becomes available for any array in your JavaScript code. This allows you to calculate the sum of elements in multiple arrays using the same method without duplicating the code.</pre>
+<p>Q.4Write a JavaScript function to retrieve all the names of object's own and inherited properties.</p>
+<pre>→function getAllPropertyNames(obj) {
+    var allProperties = [];
+    var currentObj = obj;
+  
+    while (currentObj !== null) {
+      var properties = Object.getOwnPropertyNames(currentObj);
+      allProperties = allProperties.concat(properties);
+      currentObj = Object.getPrototypeOf(currentObj);
+    }
+  
+    return allProperties;
+  }
+  In this function, obj is the object for which we want to retrieve all the property names. We initialize an empty array called allProperties to store the property names.
+  
+  We use a while loop to traverse the prototype chain of the object. Starting from the given object, we retrieve the property names using Object.getOwnPropertyNames(currentObj) and concatenate them to the allProperties array using concat().
+  
+  We then update the currentObj by accessing its prototype using Object.getPrototypeOf(currentObj). This allows us to move up the prototype chain and retrieve the property names of each subsequent prototype object.
+  
+  The loop continues until currentObj becomes null, indicating that we have reached the end of the prototype chain.
+  
+  Finally, we return the allProperties array, which contains the names of all the object's own and inherited properties.
+  
+  Here's an example of using this function:
+  
+  javascript
+  Copy code
+  // Example object
+  var obj = {
+    name: "John",
+    age: 30
+  };
+  
+  // Using the function to retrieve property names
+  var propertyNames = getAllPropertyNames(obj);
+  console.log(propertyNames);</pre>
+</body>
+</html>
